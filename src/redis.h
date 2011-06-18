@@ -661,6 +661,8 @@ struct redisServer {
     /* Pubsub */
     dict *pubsub_channels; /* Map channels to list of subscribed clients */
     list *pubsub_patterns; /* A list of pubsub_patterns */
+	/* Locking */
+    dict *locks; /* Map a lock to list of waiting clients. */
     /* Misc */
     unsigned lruclock:22;        /* clock incrementing every minute, for LRU */
     unsigned lruclock_padding:10;
@@ -1215,6 +1217,8 @@ void migrateCommand(redisClient *c);
 void dumpCommand(redisClient *c);
 void objectCommand(redisClient *c);
 void clientCommand(redisClient *c);
+void lockCommand(redisClient *c);
+void unlockCommand(redisClient *c);
 
 #if defined(__GNUC__)
 void *calloc(size_t count, size_t size) __attribute__ ((deprecated));

@@ -69,6 +69,8 @@ double R_Zero, R_PosInf, R_NegInf, R_Nan;
 struct redisServer server; /* server global state */
 struct redisCommand *commandTable;
 struct redisCommand redisCommandTable[] = {
+	{"lock",lockCommand,2,0,NULL,1,1,1,0,0},
+	{"unlock",unlockCommand,2,0,NULL,1,1,1,0,0},
     {"get",getCommand,2,0,NULL,1,1,1,0,0},
     {"set",setCommand,3,REDIS_CMD_DENYOOM,noPreloadGetKeys,1,1,1,0,0},
     {"setnx",setnxCommand,3,REDIS_CMD_DENYOOM,noPreloadGetKeys,1,1,1,0,0},
@@ -976,6 +978,7 @@ void initServer() {
     server.pubsub_patterns = listCreate();
     listSetFreeMethod(server.pubsub_patterns,freePubsubPattern);
     listSetMatchMethod(server.pubsub_patterns,listMatchPubsubPattern);
+	server.locks = dictCreate(&keylistDictType,NULL);
     server.cronloops = 0;
     server.bgsavechildpid = -1;
     server.bgrewritechildpid = -1;
